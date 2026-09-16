@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ZIPGO.API/ZIPGO.API.csproj" />
+  <Project Path="ZIPGO.Application/ZIPGO.Application.csproj" />
+  <Project Path="ZIPGO.Domain/ZIPGO.Domain.csproj" />
+  <Project Path="ZIPGO.Infrastructure/ZIPGO.Infrastructure.csproj" />
+</Solution>
