@@ -23,5 +23,18 @@ namespace ZIPGO.API.Controllers
             return Ok("Registration successful");
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            var result = await _authService.Login(loginDto);
+
+            if (result == null)
+            {
+                return Unauthorized("Invalid email or password");
+            }
+
+            return Ok(result);
+        }
+
     }
 }

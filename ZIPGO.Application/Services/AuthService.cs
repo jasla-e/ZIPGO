@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims; 
+
 using ZIPGO.Application.DTOs.Auth;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
 using ZIPGO.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace ZIPGO.Application.Services
 {
@@ -13,16 +18,60 @@ namespace ZIPGO.Application.Services
     {
 
         private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
         private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
-        public AuthService(IUserRepository userRepository)
+        public AuthService(IUserRepository userRepository,IConfiguration configuration)
         {
             _userRepository=userRepository;
+            _configuration=configuration;
         }
 
-        public Task<string?> Login(LoginDto loginDto)
+        public async Task<string?> Login(LoginDto loginDto)
         {
-            throw new NotImplementedException();
+            var user=await _userRepository.GetByEmail(loginDto.Email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = _passwordHasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                loginDto.Password
+            );
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return null;
+            }
+
+            var claims = new[]
+               {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
+               };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!)
+            );
+
+            var credentials = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256
+            );
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public async Task Register(RegisterDto registerDto)
@@ -39,8 +88,6 @@ namespace ZIPGO.Application.Services
             {
                 Name = registerDto.Name,
                 Email = registerDto.Email,
-                Gender = "Not Specified",
-                Phone = "Not Specified",
                 Role = "User",
                 IsBlocked = false,
                 CreatedAt = DateTime.Now

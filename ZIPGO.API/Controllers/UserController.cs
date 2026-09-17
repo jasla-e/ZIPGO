@@ -1,11 +1,13 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ZIPGO.Application.DTOs;
+using ZIPGO.Application.DTOs.Auth;
 using ZIPGO.Application.Interfaces.Services;
-using ZIPGO.Domain.Entities;
 
 namespace ZIPGO.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -17,30 +19,17 @@ namespace ZIPGO.API.Controllers
             _userService = userService;
         }
 
-        // GET: api/User
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetMyProfile()
         {
-            var users = await _userService.GetAll();
+            var userId = User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier
+            )?.Value;
 
-            var userDtos = users.Select(user => new UserDto
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Phone = user.Phone,
-                Gender = user.Gender,
-                Dob = user.Dob
-            }).ToList();
+            if (userId == null)
+                return Unauthorized();
 
-            return Ok(userDtos);
-        }
-
-        // GET: api/User/1
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var user = await _userService.GetById(id);
+            var user = await _userService.GetById(int.Parse(userId));
 
             if (user == null)
                 return NotFound();
@@ -58,35 +47,22 @@ namespace ZIPGO.API.Controllers
             return Ok(userDto);
         }
 
-        // POST: api/User
-        [HttpPost]
-        public async Task<IActionResult> Add(User user)
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateMyProfile(UpdateProfileDto updateProfileDto)
         {
-            await _userService.Add(user);
+            var userId = User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier
+            )?.Value;
 
-            return Ok(user);
-        }
+            if (userId == null)
+                return Unauthorized();
 
-        // PUT: api/User/1
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, User user)
-        {
-            user.Id = id;
+            await _userService.UpdateProfile(
+                int.Parse(userId),
+                updateProfileDto
+            );
 
-            await _userService.Update(user);
-
-            return Ok(user);
-        }
-
-        // DELETE: api/User/1
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _userService.Delete(id);
-
-            return Ok();
+            return Ok("Profile updated successfully");
         }
     }
 }
-
-

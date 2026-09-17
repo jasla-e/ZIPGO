@@ -7,7 +7,6 @@ namespace ZIPGO.Application.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        Task<List<User>> GetAll();
 
         Task<User?> GetById(int id);
 
@@ -17,7 +16,6 @@ namespace ZIPGO.Application.Interfaces.Repositories
 
         Task Update(User user);
 
-        Task Delete(int id);
 
     }
 }

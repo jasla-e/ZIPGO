@@ -13,6 +13,7 @@ namespace ZIPGO.API.Controllers
         public ProductController(IProductService productService)
         {
             _productService = productService;
+            
         }
 
         [HttpGet]
