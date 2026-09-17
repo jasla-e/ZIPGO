@@ -12,6 +12,8 @@ namespace ZIPGO.Infrastructure.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Address> Addresses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -26,6 +28,12 @@ namespace ZIPGO.Infrastructure.Data
                 .HasOne(p => p.SubCategory)
                 .WithMany(s => s.Products)
                 .HasForeignKey(p => p.SubCategoryId);
+
+
+            modelBuilder.Entity<Address>()
+              .HasOne(a => a.User)
+              .WithMany()
+             .HasForeignKey(a => a.UserId);
         }
     }
 }

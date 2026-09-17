@@ -12,7 +12,8 @@ namespace ZIPGO.Domain.Entities
 
         public string FullName { get; set; }
 
-        public string AddressLine {  get; set; }
+        public string HouseArea { get; set; }
+
 
         public string Phone {  get; set; }
 
@@ -21,6 +22,8 @@ namespace ZIPGO.Domain.Entities
         public string City { get; set; }
 
         public string Pincode { get; set; }
+
+        public User User { get; set; }
 
     }
 }
