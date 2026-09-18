@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ZIPGO.Domain.Entities
+namespace ZIPGO.Application.DTOs.Product
 {
-    public class Product
+    public class ProductCreateDto
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -20,13 +18,8 @@ namespace ZIPGO.Domain.Entities
 
         public string Image { get; set; }
 
-        public bool Offer {  get; set; }
+        public bool Offer { get; set; }
 
         public int SubCategoryId { get; set; }
-
-        public SubCategory SubCategory { get; set; } = null!;
-
-        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
-
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZIPGO.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ZIPGO.Infrastructure.Data;
 namespace ZIPGO.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260917093743_AddCart")]
+    partial class AddCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,7 +126,7 @@ namespace ZIPGO.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MainCategory", (string)null);
+                    b.ToTable("MainCategory");
                 });
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.Product", b =>
@@ -189,7 +192,7 @@ namespace ZIPGO.Infrastructure.Migrations
 
                     b.HasIndex("MainCategoryId");
 
-                    b.ToTable("SubCategory", (string)null);
+                    b.ToTable("SubCategory");
                 });
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.User", b =>

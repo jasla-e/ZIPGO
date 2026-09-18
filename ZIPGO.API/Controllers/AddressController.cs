@@ -47,16 +47,19 @@ namespace ZIPGO.API.Controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAddress(
-            int id,
-            AddressDto addressDto)
+        int id,
+        AddressDto addressDto)
         {
             var userId = GetUserId();
 
-            await _addressService.UpdateAddress(
+            var updated = await _addressService.UpdateAddress(
                 userId,
                 id,
                 addressDto
             );
+
+            if (!updated)
+                return NotFound("Address not found.");
 
             return Ok("Address updated successfully");
         }

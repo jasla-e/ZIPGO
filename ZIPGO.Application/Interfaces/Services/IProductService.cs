@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using ZIPGO.Domain.Entities;
+using ZIPGO.Application.DTOs.Product;
 
 namespace ZIPGO.Application.Interfaces.Services
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAll();
+        Task<List<ProductDto>> GetAll();
 
-        Task<Product?> GetById(int id);
+        Task<ProductDto?> GetById(int id);
 
-        Task Add(Product product);
+        Task Add(ProductCreateDto product);
 
-        Task Update(Product product);
+        Task Update(int id, ProductCreateDto product);
 
         Task Delete(int id);
-
     }
 }

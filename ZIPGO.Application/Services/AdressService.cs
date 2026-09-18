@@ -20,6 +20,7 @@ namespace ZIPGO.Application.Services
 
             return addresses.Select(a => new AddressDto
             {
+                Id=a.Id,
                 FullName = a.FullName,
                 Phone = a.Phone,
                 HouseArea = a.HouseArea,
@@ -45,15 +46,15 @@ namespace ZIPGO.Application.Services
             await _addressRepository.Add(address);
         }
 
-        public async Task UpdateAddress(
-            int userId,
-            int addressId,
-            AddressDto addressDto)
+        public async Task<bool> UpdateAddress(
+        int userId,
+        int addressId,
+        AddressDto addressDto)
         {
             var existingAddress = await _addressRepository.GetById(addressId);
 
             if (existingAddress == null || existingAddress.UserId != userId)
-                return;
+                return false;
 
             existingAddress.FullName = addressDto.FullName;
             existingAddress.Phone = addressDto.Phone;
@@ -63,6 +64,8 @@ namespace ZIPGO.Application.Services
             existingAddress.Pincode = addressDto.Pincode;
 
             await _addressRepository.Update(existingAddress);
+
+            return true;
         }
 
         public async Task DeleteAddress(int userId, int addressId)

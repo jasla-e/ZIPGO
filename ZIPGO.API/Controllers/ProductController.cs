@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ZIPGO.Application.DTOs.Product;
 using ZIPGO.Application.Interfaces.Services;
-using ZIPGO.Domain.Entities;
 
 namespace ZIPGO.API.Controllers
 {
@@ -13,7 +13,6 @@ namespace ZIPGO.API.Controllers
         public ProductController(IProductService productService)
         {
             _productService = productService;
-            
         }
 
         [HttpGet]
@@ -36,7 +35,7 @@ namespace ZIPGO.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Product product)
+        public async Task<IActionResult> Add(ProductCreateDto product)
         {
             await _productService.Add(product);
 
@@ -44,11 +43,9 @@ namespace ZIPGO.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Product product)
+        public async Task<IActionResult> Update(int id, ProductCreateDto product)
         {
-            product.Id = id;
-
-            await _productService.Update(product);
+            await _productService.Update(id, product);
 
             return Ok(product);
         }

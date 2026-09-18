@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ZIPGO.Domain.Entities
+﻿namespace ZIPGO.Domain.Entities
 {
     public class Cart
     {
@@ -10,5 +6,9 @@ namespace ZIPGO.Domain.Entities
 
         public int UserId { get; set; }
 
+        public User User { get; set; } = null!;
+
+        public ICollection<CartItem> CartItems { get; set; }
+            = new List<CartItem>();
     }
 }
