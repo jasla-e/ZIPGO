@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 namespace ZIPGO.Domain.Entities
 {
     public class Wishlist
@@ -10,5 +9,9 @@ namespace ZIPGO.Domain.Entities
 
         public int UserId { get; set; }
 
+        public User User { get; set; } = null!;
+
+        public ICollection<WishlistItem> WishlistItems { get; set; }
+            = new List<WishlistItem>();
     }
 }

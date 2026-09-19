@@ -21,6 +21,13 @@ namespace ZIPGO.Infrastructure.Data
         public DbSet<SubCategory> SubCategories { get; set; }
 
         public DbSet<MainCategory> MainCategories { get; set; }
+
+        public DbSet<Wishlist> Wishlists { get; set; }
+
+        public DbSet<WishlistItem> WishlistItems { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -64,6 +71,52 @@ namespace ZIPGO.Infrastructure.Data
 
             modelBuilder.Entity<SubCategory>()
                 .ToTable("SubCategory");
+
+            modelBuilder.Entity<Wishlist>()
+            .HasOne(w => w.User)
+            .WithOne()
+           .HasForeignKey<Wishlist>(w => w.UserId);
+
+            modelBuilder.Entity<WishlistItem>()
+                .HasOne(wi => wi.Wishlist)
+                .WithMany(w => w.WishlistItems)
+                .HasForeignKey(wi => wi.WishlistId);
+
+            modelBuilder.Entity<WishlistItem>()
+                .HasOne(wi => wi.Product)
+                .WithMany()
+                .HasForeignKey(wi => wi.ProductId);
+
+            modelBuilder.Entity<Order>()
+           .HasOne(o => o.User)
+           .WithMany()
+           .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Address)
+                .WithMany()
+                .HasForeignKey(o => o.AddressId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Product)
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId);
+
+            modelBuilder.Entity<OrderItem>()
+                .Property(oi => oi.Price)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalAmount)
+                .HasPrecision(18, 2);
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-namespace ZIPGO.Domain.Entities
+namespace ZIPGO.Application.DTOs.Order
 {
-    public class Order
+    public class OrderDto
     {
         public int Id { get; set; }
 
@@ -18,11 +17,7 @@ namespace ZIPGO.Domain.Entities
 
         public decimal TotalAmount { get; set; }
 
-        public User User { get; set; } = null!;
-
-        public Address Address { get; set; } = null!;
-
-        public ICollection<OrderItem> OrderItems { get; set; }
-            = new List<OrderItem>();
+        public List<OrderItemDto> OrderItems { get; set; }
+            = new List<OrderItemDto>();
     }
 }
