@@ -4,18 +4,16 @@ using System.Text;
 
 namespace ZIPGO.Domain.Entities
 {
-   public class SubCategory
+    public class SubCategory
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public int MainCategoryId { get; set; }
+        public ICollection<MainCategory> MainCategories { get; set; }
+            = new List<MainCategory>();
 
-        public MainCategory MainCategory { get; set; }
-
-        public ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<Product> Products { get; set; }
+            = new List<Product>();
     }
-
-
 }

@@ -1,12 +1,15 @@
-﻿namespace ZIPGO.Domain.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ZIPGO.Domain.Entities
 {
     public class MainCategory
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        // One MainCategory can have many SubCategories
         public ICollection<SubCategory> SubCategories { get; set; }
             = new List<SubCategory>();
     }

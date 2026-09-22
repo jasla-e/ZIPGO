@@ -6,7 +6,6 @@ namespace ZIPGO.Domain.Entities
 {
     public class Payment
     {
-
         public int Id { get; set; }
 
         public int OrderId { get; set; }
@@ -15,9 +14,12 @@ namespace ZIPGO.Domain.Entities
 
         public string PaymentStatus { get; set; }
 
-        public string TransactionId { get; set; }
+        public string? TransactionId { get; set; }
+
+        public string? RazorpayOrderId { get; set; }
+
+        public string? RazorpaySignature { get; set; }
 
         public decimal Amount { get; set; }
-
     }
 }

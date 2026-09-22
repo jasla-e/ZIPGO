@@ -23,6 +23,7 @@ namespace ZIPGO.Domain.Entities
 
         public string Pincode { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
         public User User { get; set; }
 
     }

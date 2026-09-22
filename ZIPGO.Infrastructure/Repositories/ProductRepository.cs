@@ -5,6 +5,7 @@ using System.Text;
 using ZIPGO.Application.Interfaces;
 using ZIPGO.Domain.Entities;
 using ZIPGO.Infrastructure.Data;
+using ZIPGO.Application.DTOs.Product;
 
 namespace ZIPGO.Infrastructure.Repositories
 {
@@ -62,6 +63,63 @@ namespace ZIPGO.Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             }
+
         }
+
+        public async Task<List<Product>> GetFiltered(ProductFilterDto filter)
+        {
+            var query = _context.Products.AsQueryable();
+
+            // Search
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(filter.Search));
+            }
+            //mainCategory
+            if (filter.MainCategoryId.HasValue)
+            {
+                query = query.Where(p =>
+                    p.MainCategoryId == filter.MainCategoryId.Value);
+            }
+
+            // SubCategory
+            if (filter.SubCategoryId.HasValue)
+            {
+                query = query.Where(p =>
+                    p.SubCategoryId == filter.SubCategoryId.Value);
+            }
+
+            // Price Range
+            if (filter.PriceRange == "under 500")
+            {
+                query = query.Where(p => p.Price < 500);
+            }
+            else if (filter.PriceRange == "500 - 1000")
+            {
+                query = query.Where(p => p.Price >= 500 && p.Price <= 1000);
+            }
+            else if (filter.PriceRange == "1000 - 5000")
+            {
+                query = query.Where(p => p.Price >= 1000 && p.Price <= 5000);
+            }
+            else if (filter.PriceRange == "above 5000")
+            {
+                query = query.Where(p => p.Price > 5000);
+            }
+
+            // Sorting
+            if (filter.Sort == "price_asc")
+            {
+                query = query.OrderBy(p => p.Price);
+            }
+            else if (filter.Sort == "price_desc")
+            {
+                query = query.OrderByDescending(p => p.Price);
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }

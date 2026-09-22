@@ -8,10 +8,14 @@ namespace ZIPGO.Application.Services
     public class SubCategoryService : ISubCategoryService
     {
         private readonly ISubCategoryRepository _subCategoryRepository;
+        private readonly IMainCategoryRepository _mainCategoryRepository;
 
-        public SubCategoryService(ISubCategoryRepository subCategoryRepository)
+        public SubCategoryService(
+       ISubCategoryRepository subCategoryRepository,
+       IMainCategoryRepository mainCategoryRepository)
         {
             _subCategoryRepository = subCategoryRepository;
+            _mainCategoryRepository = mainCategoryRepository;
         }
 
         public async Task<List<SubCategoryDto>> GetAll()
@@ -22,9 +26,27 @@ namespace ZIPGO.Application.Services
             {
                 Id = s.Id,
                 Name = s.Name,
-                MainCategoryId = s.MainCategoryId
+                MainCategoryIds = s.MainCategories
+                    .Select(m => m.Id)
+                    .ToList()
             }).ToList();
         }
+
+        public async Task<List<SubCategoryDto>> GetByMainCategoryId(int mainCategoryId)
+        {
+            var subCategories =
+                await _subCategoryRepository.GetByMainCategoryId(mainCategoryId);
+
+            return subCategories.Select(s => new SubCategoryDto
+            {
+                Id = s.Id,
+                Name = s.Name,
+                MainCategoryIds = s.MainCategories
+                    .Select(m => m.Id)
+                    .ToList()
+            }).ToList();
+        }
+
 
         public async Task<SubCategoryDto?> GetById(int id)
         {
@@ -37,7 +59,9 @@ namespace ZIPGO.Application.Services
             {
                 Id = subCategory.Id,
                 Name = subCategory.Name,
-                MainCategoryId = subCategory.MainCategoryId
+                MainCategoryIds = subCategory.MainCategories
+                    .Select(m => m.Id)
+                    .ToList()
             };
         }
 
@@ -45,9 +69,18 @@ namespace ZIPGO.Application.Services
         {
             var subCategory = new SubCategory
             {
-                Name = subCategoryDto.Name,
-                MainCategoryId = subCategoryDto.MainCategoryId
+                Name = subCategoryDto.Name
             };
+
+            foreach (var mainCategoryId in subCategoryDto.MainCategoryIds)
+            {
+                var mainCategory = await _mainCategoryRepository.GetById(mainCategoryId);
+
+                if (mainCategory == null)
+                    throw new Exception($"MainCategory with Id {mainCategoryId} not found");
+
+                subCategory.MainCategories.Add(mainCategory);
+            }
 
             await _subCategoryRepository.Add(subCategory);
         }
@@ -60,7 +93,19 @@ namespace ZIPGO.Application.Services
                 return;
 
             subCategory.Name = subCategoryDto.Name;
-            subCategory.MainCategoryId = subCategoryDto.MainCategoryId;
+
+            subCategory.MainCategories.Clear();
+
+            foreach (var mainCategoryId in subCategoryDto.MainCategoryIds)
+            {
+                var mainCategory = await _mainCategoryRepository.GetById(mainCategoryId);
+
+                if (mainCategory == null)
+                    throw new Exception(
+                        $"MainCategory with Id {mainCategoryId} not found");
+
+                subCategory.MainCategories.Add(mainCategory);
+            }
 
             await _subCategoryRepository.Update(subCategory);
         }

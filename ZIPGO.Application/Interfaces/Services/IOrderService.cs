@@ -8,15 +8,11 @@ namespace ZIPGO.Application.Interfaces.Services
 {
     public interface IOrderService
     {
-        Task<List<OrderDto>> GetAll();
-
-        Task<OrderDto?> GetById(int id);
+        Task<OrderDto?> GetById(int id, int userId);
 
         Task<List<OrderDto>> GetMyOrders(int userId);
 
-        Task UpdateStatus(int id, string status);
-
-        Task<OrderDto> CreateOrder(
+        Task<CreateOrderResponseDto> CreateOrder(
             int userId,
             CreateOrderDto orderDto);
     }

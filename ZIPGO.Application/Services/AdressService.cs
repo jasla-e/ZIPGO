@@ -68,14 +68,18 @@ namespace ZIPGO.Application.Services
             return true;
         }
 
-        public async Task DeleteAddress(int userId, int addressId)
+        public async Task<bool> DeleteAddress(int userId, int addressId)
         {
             var address = await _addressRepository.GetById(addressId);
 
             if (address == null || address.UserId != userId)
-                return;
+                return false;
 
-            await _addressRepository.Delete(addressId);
+            address.IsDeleted = true;
+
+            await _addressRepository.Update(address);
+
+            return true;
         }
     }
 }

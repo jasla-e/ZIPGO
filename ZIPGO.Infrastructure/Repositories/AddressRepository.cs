@@ -17,7 +17,7 @@ namespace ZIPGO.Infrastructure.Repositories
         public async Task<List<Address>> GetByUserId(int userId)
         {
             return await _context.Addresses
-                .Where(a => a.UserId == userId)
+                .Where(a => a.UserId == userId && !a.IsDeleted)
                 .ToListAsync();
         }
 
@@ -46,20 +46,12 @@ namespace ZIPGO.Infrastructure.Repositories
                 existingAddress.City = address.City;
                 existingAddress.State = address.State;
                 existingAddress.Pincode = address.Pincode;
+                existingAddress.IsDeleted = address.IsDeleted;
 
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task Delete(int id)
-        {
-            var address = await _context.Addresses.FindAsync(id);
-
-            if (address != null)
-            {
-                _context.Addresses.Remove(address);
-                await _context.SaveChangesAsync();
-            }
-        }
+      
     }
 }

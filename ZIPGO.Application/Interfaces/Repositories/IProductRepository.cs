@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ZIPGO.Application.DTOs.Product;
 using ZIPGO.Domain.Entities;
 
 namespace ZIPGO.Application.Interfaces
@@ -17,6 +18,7 @@ namespace ZIPGO.Application.Interfaces
 
         Task Delete(int id);
 
+        Task<List<Product>> GetFiltered(ProductFilterDto filter);
 
     }
 }

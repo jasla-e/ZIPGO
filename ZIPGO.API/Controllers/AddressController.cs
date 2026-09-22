@@ -68,8 +68,11 @@ namespace ZIPGO.API.Controllers
         public async Task<IActionResult> DeleteAddress(int id)
         {
             var userId = GetUserId();
+            
+            var deleted = await _addressService.DeleteAddress(userId, id);
 
-            await _addressService.DeleteAddress(userId, id);
+            if (!deleted)
+                return NotFound("Address not found.");
 
             return Ok("Address deleted successfully");
         }

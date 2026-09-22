@@ -15,8 +15,7 @@ namespace ZIPGO.Application.Interfaces.Repositories
 
         Task Update(Address address);
 
-        Task Delete(int id);
-
+     
 
 
 

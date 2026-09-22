@@ -9,7 +9,7 @@ namespace ZIPGO.Application.Interfaces.Repositories
     {
         Task<List<Order>> GetAll();
 
-        Task<Order?> GetById(int id);
+        Task<Order?> GetById(int id, int userId);
 
         Task<List<Order>> GetByUserId(int userId);
 

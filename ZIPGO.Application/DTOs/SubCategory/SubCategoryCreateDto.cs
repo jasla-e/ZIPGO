@@ -8,6 +8,6 @@ namespace ZIPGO.Application.DTOs.SubCategory
     {
         public string Name { get; set; }
 
-        public int MainCategoryId { get; set; }
+        public List<int> MainCategoryIds { get; set; } = new();
     }
 }

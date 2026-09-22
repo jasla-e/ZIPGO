@@ -22,6 +22,15 @@ namespace ZIPGO.API.Controllers
             return Ok(subCategories);
         }
 
+        [HttpGet("by-main-category/{mainCategoryId}")]
+        public async Task<IActionResult> GetByMainCategoryId(int mainCategoryId)
+        {
+            var subCategories =
+                await _subCategoryService.GetByMainCategoryId(mainCategoryId);
+
+            return Ok(subCategories);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

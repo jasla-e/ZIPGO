@@ -28,6 +28,8 @@ namespace ZIPGO.Infrastructure.Data
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+
+        public DbSet<Payment> Payments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>()
@@ -42,6 +44,27 @@ namespace ZIPGO.Infrastructure.Data
                 .HasOne(p => p.SubCategory)
                 .WithMany(s => s.Products)
                 .HasForeignKey(p => p.SubCategoryId);
+
+            modelBuilder.Entity<Product>()
+            .HasOne(p => p.MainCategory)
+            .WithMany()
+            .HasForeignKey(p => p.MainCategoryId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<MainCategory>()
+                .HasMany(m => m.SubCategories)
+                .WithMany(s => s.MainCategories)
+                .UsingEntity<Dictionary<string, object>>(
+                    "MainCategorySubCategory",
+                    j => j
+                        .HasOne<SubCategory>()
+                        .WithMany()
+                        .HasForeignKey("SubCategoryId"),
+                    j => j
+                        .HasOne<MainCategory>()
+                        .WithMany()
+                        .HasForeignKey("MainCategoryId")
+                );
 
 
             modelBuilder.Entity<Address>()
@@ -117,6 +140,17 @@ namespace ZIPGO.Infrastructure.Data
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalAmount)
                 .HasPrecision(18, 2);
+
+
+            modelBuilder.Entity<Payment>()
+            .HasOne<Order>()
+            .WithOne()
+            .HasForeignKey<Payment>(p => p.OrderId);
+
+
+            modelBuilder.Entity<Payment>()
+           .Property(p => p.Amount)
+           .HasPrecision(18, 2);
         }
     }
 }

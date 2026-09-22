@@ -39,27 +39,36 @@ namespace ZIPGO.Infrastructure.Repositories
         public async Task<List<SubCategory>> GetAll()
         {
             return await _context.SubCategories
-              .ToListAsync();
+                .Include(s => s.MainCategories)
+                .ToListAsync();
         }
 
+        public async Task<List<SubCategory>> GetByMainCategoryId(int mainCategoryId)
+        {
+            return await _context.SubCategories
+                .Include(s => s.MainCategories)
+                .Where(s => s.MainCategories.Any(m => m.Id == mainCategoryId))
+                .ToListAsync();
+        }
+        public async Task<bool> BelongsToMainCategory(
+          int subCategoryId,
+          int mainCategoryId)
+        {
+            return await _context.SubCategories
+                .AnyAsync(s =>
+                    s.Id == subCategoryId &&
+                    s.MainCategories.Any(m => m.Id == mainCategoryId));
+        }
         public async Task<SubCategory?> GetById(int id)
         {
             return await _context.SubCategories
-                 .FindAsync(id);
+                .Include(s => s.MainCategories)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task Update(SubCategory subCategory)
         {
-            var existingSubCategory = await _context.SubCategories
-                 .FindAsync(subCategory.Id);
-
-            if (existingSubCategory != null)
-            {
-                existingSubCategory.Name = subCategory.Name;
-                existingSubCategory.MainCategoryId = subCategory.MainCategoryId;
-
-                await _context.SaveChangesAsync();
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -24,17 +24,20 @@ namespace ZIPGO.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Order?> GetById(int id)
+        public async Task<Order?> GetById(int id, int userId)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
-                .FirstOrDefaultAsync(o => o.Id == id);
+                .FirstOrDefaultAsync(o =>
+                    o.Id == id &&
+                    o.UserId == userId);
         }
 
         public async Task<List<Order>> GetByUserId(int userId)
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
                 .Where(o => o.UserId == userId)
                 .ToListAsync();
         }

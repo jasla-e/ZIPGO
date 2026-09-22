@@ -23,6 +23,16 @@ namespace ZIPGO.API.Controllers
             return Ok(products);
         }
 
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFiltered(
+    [FromQuery] ProductFilterDto filter)
+        {
+            var products = await _productService.GetFiltered(filter);
+
+            return Ok(products);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

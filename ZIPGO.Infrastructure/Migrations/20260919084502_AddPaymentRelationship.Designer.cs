@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ZIPGO.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ZIPGO.Infrastructure.Data;
 namespace ZIPGO.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260919084502_AddPaymentRelationship")]
+    partial class AddPaymentRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace ZIPGO.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("MainCategorySubCategory", b =>
-                {
-                    b.Property<int>("MainCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubCategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MainCategoryId", "SubCategoryId");
-
-                    b.HasIndex("SubCategoryId");
-
-                    b.ToTable("MainCategorySubCategory");
-                });
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.Address", b =>
                 {
@@ -56,9 +44,6 @@ namespace ZIPGO.Infrastructure.Migrations
                     b.Property<string>("HouseArea")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -238,6 +223,7 @@ namespace ZIPGO.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransactionId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -264,9 +250,6 @@ namespace ZIPGO.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MainCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -290,8 +273,6 @@ namespace ZIPGO.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MainCategoryId");
-
                     b.HasIndex("SubCategoryId");
 
                     b.ToTable("Products");
@@ -305,11 +286,16 @@ namespace ZIPGO.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("MainCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MainCategoryId");
 
                     b.ToTable("SubCategory", (string)null);
                 });
@@ -398,21 +384,6 @@ namespace ZIPGO.Infrastructure.Migrations
                     b.HasIndex("WishlistId");
 
                     b.ToTable("WishlistItems");
-                });
-
-            modelBuilder.Entity("MainCategorySubCategory", b =>
-                {
-                    b.HasOne("ZIPGO.Domain.Entities.MainCategory", null)
-                        .WithMany()
-                        .HasForeignKey("MainCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ZIPGO.Domain.Entities.SubCategory", null)
-                        .WithMany()
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.Address", b =>
@@ -505,21 +476,24 @@ namespace ZIPGO.Infrastructure.Migrations
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("ZIPGO.Domain.Entities.MainCategory", "MainCategory")
-                        .WithMany()
-                        .HasForeignKey("MainCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("ZIPGO.Domain.Entities.SubCategory", "SubCategory")
                         .WithMany("Products")
                         .HasForeignKey("SubCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MainCategory");
-
                     b.Navigation("SubCategory");
+                });
+
+            modelBuilder.Entity("ZIPGO.Domain.Entities.SubCategory", b =>
+                {
+                    b.HasOne("ZIPGO.Domain.Entities.MainCategory", "MainCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("MainCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MainCategory");
                 });
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.Wishlist", b =>
@@ -555,6 +529,11 @@ namespace ZIPGO.Infrastructure.Migrations
             modelBuilder.Entity("ZIPGO.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
+                });
+
+            modelBuilder.Entity("ZIPGO.Domain.Entities.MainCategory", b =>
+                {
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("ZIPGO.Domain.Entities.Order", b =>

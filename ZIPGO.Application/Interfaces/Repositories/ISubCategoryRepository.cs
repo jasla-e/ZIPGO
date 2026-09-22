@@ -9,6 +9,10 @@ namespace ZIPGO.Application.Interfaces.Repositories
     {
         Task<List<SubCategory>> GetAll();
 
+        Task<List<SubCategory>> GetByMainCategoryId(int mainCategoryId);
+
+        Task<bool> BelongsToMainCategory(int subCategoryId, int mainCategoryId);
+
         Task<SubCategory?> GetById(int id);
 
         Task Add(SubCategory subCategory);

@@ -38,7 +38,9 @@ namespace ZIPGO.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await _orderService.GetById(id);
+            var userId = GetUserId();
+
+            var order = await _orderService.GetById(id, userId);
 
             if (order == null)
                 return NotFound();

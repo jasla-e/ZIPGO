@@ -22,6 +22,8 @@ namespace ZIPGO.Application.DTOs.Product
 
         public bool Offer { get; set; }
 
+        public int MainCategoryId { get; set; }
+
         public int SubCategoryId { get; set; }
     }
 }

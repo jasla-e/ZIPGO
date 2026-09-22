@@ -6,8 +6,10 @@ using ZIPGO.Application.Interfaces;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
 using ZIPGO.Application.Services;
+using ZIPGO.Application.Settings;
 using ZIPGO.Infrastructure.Data;
 using ZIPGO.Infrastructure.Repositories;
+using ZIPGO.Infrastructure.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +61,8 @@ builder.Services.AddSwaggerGen(options =>
         });
 });
 
+builder.Services.Configure<RazorpaySettings>(
+    builder.Configuration.GetSection("Razorpay"));
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -81,7 +85,9 @@ builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<IWishlistItemRepository, WishlistItemRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IRazorpayService, RazorpayService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

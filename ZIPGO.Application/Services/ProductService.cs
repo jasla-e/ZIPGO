@@ -1,5 +1,6 @@
 ﻿using ZIPGO.Application.DTOs.Product;
 using ZIPGO.Application.Interfaces;
+using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
 using ZIPGO.Domain.Entities;
 
@@ -8,12 +9,15 @@ namespace ZIPGO.Application.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly ISubCategoryRepository _subCategoryRepository;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(
+        IProductRepository productRepository,
+        ISubCategoryRepository subCategoryRepository)
         {
             _productRepository = productRepository;
+            _subCategoryRepository = subCategoryRepository;
         }
-
         public async Task<List<ProductDto>> GetAll()
         {
             var products = await _productRepository.GetAll();
@@ -28,6 +32,7 @@ namespace ZIPGO.Application.Services
                 Stock = p.Stock,
                 Image = p.Image,
                 Offer = p.Offer,
+                MainCategoryId = p.MainCategoryId,
                 SubCategoryId = p.SubCategoryId
             }).ToList();
         }
@@ -49,12 +54,46 @@ namespace ZIPGO.Application.Services
                 Stock = product.Stock,
                 Image = product.Image,
                 Offer = product.Offer,
+                MainCategoryId = product.MainCategoryId,
                 SubCategoryId = product.SubCategoryId
             };
         }
 
+        public async Task<List<ProductDto>> GetFiltered(ProductFilterDto filter)
+        {
+            var products = await _productRepository.GetFiltered(filter);
+
+            return products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Rating = p.Rating,
+                Stock = p.Stock,
+                Image = p.Image,
+                Offer = p.Offer,
+                MainCategoryId = p.MainCategoryId,
+                SubCategoryId = p.SubCategoryId
+            }).ToList();
+        }
+
         public async Task Add(ProductCreateDto productDto)
         {
+            var subCategory = await _subCategoryRepository.GetById(
+                productDto.SubCategoryId);
+
+            if (subCategory == null)
+                throw new Exception("SubCategory not found");
+
+       var belongsToMainCategory =
+       await _subCategoryRepository.BelongsToMainCategory(
+        productDto.SubCategoryId,
+        productDto.MainCategoryId);
+
+            if (!belongsToMainCategory)
+                throw new Exception("SubCategory does not belong to the selected MainCategory");
+
             var product = new Product
             {
                 Name = productDto.Name,
@@ -64,6 +103,7 @@ namespace ZIPGO.Application.Services
                 Stock = productDto.Stock,
                 Image = productDto.Image,
                 Offer = productDto.Offer,
+                MainCategoryId = productDto.MainCategoryId,
                 SubCategoryId = productDto.SubCategoryId
             };
 
@@ -77,6 +117,20 @@ namespace ZIPGO.Application.Services
             if (product == null)
                 return;
 
+            var subCategory = await _subCategoryRepository.GetById(
+                productDto.SubCategoryId);
+
+            if (subCategory == null)
+                throw new Exception("SubCategory not found");
+
+            var belongsToMainCategory =
+         await _subCategoryRepository.BelongsToMainCategory(
+        productDto.SubCategoryId,
+        productDto.MainCategoryId);
+
+            if (!belongsToMainCategory)
+                throw new Exception("SubCategory does not belong to the selected MainCategory");
+
             product.Name = productDto.Name;
             product.Description = productDto.Description;
             product.Price = productDto.Price;
@@ -84,6 +138,7 @@ namespace ZIPGO.Application.Services
             product.Stock = productDto.Stock;
             product.Image = productDto.Image;
             product.Offer = productDto.Offer;
+            product.MainCategoryId = productDto.MainCategoryId;
             product.SubCategoryId = productDto.SubCategoryId;
 
             await _productRepository.Update(product);

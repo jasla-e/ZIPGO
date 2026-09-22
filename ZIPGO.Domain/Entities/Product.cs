@@ -22,8 +22,10 @@ namespace ZIPGO.Domain.Entities
 
         public bool Offer {  get; set; }
 
-        public int SubCategoryId { get; set; }
+        public int MainCategoryId { get; set; }
+        public MainCategory MainCategory { get; set; } = null!;
 
+        public int SubCategoryId { get; set; }
         public SubCategory SubCategory { get; set; } = null!;
 
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
