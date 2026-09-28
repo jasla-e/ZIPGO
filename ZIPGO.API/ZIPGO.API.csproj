@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middleware\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ZIPGO.Application\ZIPGO.Application.csproj" />
     <ProjectReference Include="..\ZIPGO.Infrastructure\ZIPGO.Infrastructure.csproj" />
   </ItemGroup>
