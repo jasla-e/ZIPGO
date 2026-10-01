@@ -64,5 +64,36 @@ namespace ZIPGO.API.Controllers
 
             return Ok("Profile updated successfully");
         }
+
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsers();
+
+            return Ok(users);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}/block")]
+        public async Task<IActionResult> BlockUser(int id)
+        {
+            await _userService.BlockUser(id);
+
+            return Ok("User status updated successfully");
+        }
+
+        [Authorize(Roles ="Admin")]
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers(string search)
+        {
+            var users = await _userService.SearchUsers(search);
+
+            return Ok(users);
+        }
+
+
     }
 }

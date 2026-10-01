@@ -88,7 +88,20 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IRazorpayService, RazorpayService>();
+builder.Services.AddScoped<IDasboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
 var app = builder.Build();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    await AdminSeeder.SeedAdminAsync(context);
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

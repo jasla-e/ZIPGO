@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ZIPGO.Application.DTOs.Product;
 using ZIPGO.Application.Interfaces.Services;
 
@@ -44,6 +45,7 @@ namespace ZIPGO.API.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(ProductCreateDto product)
         {
@@ -52,6 +54,7 @@ namespace ZIPGO.API.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ProductCreateDto product)
         {
@@ -60,6 +63,7 @@ namespace ZIPGO.API.Controllers
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

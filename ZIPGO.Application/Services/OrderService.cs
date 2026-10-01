@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ZIPGO.Application.DTOs;
+using ZIPGO.Application.DTOs.Admin;
 using ZIPGO.Application.DTOs.Order;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
@@ -35,29 +36,37 @@ namespace ZIPGO.Application.Services
             _razorpayService = razorpayService;
             _razorpaySettings = razorpaySettings.Value;
         }
-        public async Task<List<OrderDto>> GetAll()
+        public async Task<List<AdminOrderDto>> GetAll()
         {
             var orders = await _orderRepository.GetAll();
 
-            return orders.Select(order => new OrderDto
+            return orders.Select(order => new AdminOrderDto
             {
                 Id = order.Id,
-                UserId = order.UserId,
-                AddressId = order.AddressId,
-                Status = order.Status,
+
+                CustomerName = order.User?.Name ?? "Unknown",
+                Phone = order.User?.Phone ?? "N/A",
+
+                Address = order.Address == null
+                    ? "N/A"
+                    : $"{order.Address.HouseArea}, {order.Address.City}, {order.Address.State} - {order.Address.Pincode}",
+
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
+                Status = order.Status,
 
-                OrderItems = order.OrderItems.Select(item => new OrderItemDto
+                PaymentMethod = order.Payment?.PaymentMethod ?? "N/A",
+
+                OrderItems = order.OrderItems.Select(item => new AdminOrderItemDto
                 {
-                    Id = item.Id,
                     ProductId = item.ProductId,
+                    ProductName = item.Product?.Name ?? "Unknown",
                     Quantity = item.Quantity,
                     Price = item.Price
                 }).ToList()
+
             }).ToList();
         }
-
         public async Task<OrderDto?> GetById(int id, int userId)
         {
             var order = await _orderRepository.GetById(id, userId);
@@ -221,6 +230,55 @@ namespace ZIPGO.Application.Services
                 RazorpayOrderId = razorpayOrderId,
                 RazorpayKeyId = razorpayKeyId
             };
+
+
+        }
+        public async Task UpdateStatus(int orderId, string status)
+        {
+            var validStatuses = new[]
+            {
+        "Pending",
+        "Shipped",
+        "Delivered",
+        "Completed"
+    };
+
+            if (!validStatuses.Contains(status))
+                throw new Exception("Invalid order status");
+
+            await _orderRepository.UpdateStatus(orderId, status);
+        }
+
+        public async Task<List<AdminOrderDto>> SearchOrders(string search,string status)
+        {
+            var orders = await _orderRepository.SearchOrder(search, status);
+
+            return orders.Select(order => new AdminOrderDto
+            {
+                Id = order.Id,
+
+                CustomerName = order.User?.Name ?? "Unknown",
+                Phone = order.User?.Phone ?? "N/A",
+
+                Address = order.Address == null
+                    ? "N/A"
+                    : $"{order.Address.HouseArea}, {order.Address.City}, {order.Address.State} - {order.Address.Pincode}",
+
+                OrderDate = order.OrderDate,
+                TotalAmount = order.TotalAmount,
+                Status = order.Status,
+
+                PaymentMethod = order.Payment?.PaymentMethod ?? "N/A",
+
+                OrderItems = order.OrderItems.Select(item => new AdminOrderItemDto
+                {
+                    ProductId = item.ProductId,
+                    ProductName = item.Product?.Name ?? "Unknown",
+                    Quantity = item.Quantity,
+                    Price = item.Price
+                }).ToList()
+
+            }).ToList();
         }
     }
 }

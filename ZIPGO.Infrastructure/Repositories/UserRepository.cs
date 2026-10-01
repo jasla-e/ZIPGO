@@ -45,5 +45,20 @@ namespace ZIPGO.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<User>> GetAll()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        public async Task<List<User>> SearchUsers(string search)
+        {
+            return await _context.Users
+                .Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search) ||
+                    u.Phone.Contains(search))
+                .ToListAsync();
+        }
     }
 }

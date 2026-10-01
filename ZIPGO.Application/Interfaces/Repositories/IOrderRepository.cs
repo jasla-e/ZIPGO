@@ -16,5 +16,9 @@ namespace ZIPGO.Application.Interfaces.Repositories
         Task Add(Order order);
 
         Task Update(Order order);
+
+        Task UpdateStatus(int orderId, string status);
+
+        Task<List<Order>> SearchOrder(string search, string status);
     }
 }

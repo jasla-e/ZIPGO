@@ -143,10 +143,10 @@ namespace ZIPGO.Infrastructure.Data
 
 
             modelBuilder.Entity<Payment>()
-            .HasOne<Order>()
-            .WithOne()
+            .HasOne(p => p.Order)
+             .WithOne(o => o.Payment)
             .HasForeignKey<Payment>(p => p.OrderId);
-
+   
 
             modelBuilder.Entity<Payment>()
            .Property(p => p.Amount)

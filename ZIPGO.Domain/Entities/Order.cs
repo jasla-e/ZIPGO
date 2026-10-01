@@ -22,6 +22,7 @@ namespace ZIPGO.Domain.Entities
 
         public Address Address { get; set; } = null!;
 
+        public Payment Payment { get; set; } = null!;
         public ICollection<OrderItem> OrderItems { get; set; }
             = new List<OrderItem>();
     }

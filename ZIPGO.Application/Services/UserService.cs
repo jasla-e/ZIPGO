@@ -1,4 +1,5 @@
 ﻿using ZIPGO.Application.DTOs;
+using ZIPGO.Application.DTOs.Admin;
 using ZIPGO.Application.DTOs.Auth;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
@@ -20,6 +21,23 @@ namespace ZIPGO.Application.Services
             return await _userRepository.GetById(id);
         }
 
+        public async Task<List<AdminUserDto>> GetAllUsers()
+        {
+            var users = await _userRepository.GetAll();
+
+            var adminUsers = users.Select(user => new AdminUserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role,
+                Phone = user.Phone,
+                Gender = user.Gender,
+                IsBlocked = user.IsBlocked
+            }).ToList();
+
+            return adminUsers;
+        }
         public async Task UpdateProfile(
             int userId,
             UpdateProfileDto updateProfileDto)
@@ -36,5 +54,36 @@ namespace ZIPGO.Application.Services
 
             await _userRepository.Update(user);
         }
+
+        public async Task BlockUser(int Id)
+        {
+            var user= await _userRepository.GetById(Id);
+
+            if(user == null)
+            {
+                return;
+            }
+
+            user.IsBlocked=!user.IsBlocked;
+            await _userRepository.Update(user);
+        }
+
+        public async Task<List<AdminUserDto>> SearchUsers(string search)
+        {
+            var users = await _userRepository.SearchUsers(search);
+
+            return users.Select(user => new AdminUserDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Phone = user.Phone,
+                Gender = user.Gender,
+                Role = user.Role,
+                IsBlocked = user.IsBlocked
+            }).ToList();
+        }
+
+
     }
 }

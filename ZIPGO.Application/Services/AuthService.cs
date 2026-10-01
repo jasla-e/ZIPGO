@@ -36,6 +36,10 @@ namespace ZIPGO.Application.Services
                 return null;
             }
 
+            if (user.IsBlocked)
+            {
+                return null;
+            }
             var result = _passwordHasher.VerifyHashedPassword(
                 user,
                 user.PasswordHash,

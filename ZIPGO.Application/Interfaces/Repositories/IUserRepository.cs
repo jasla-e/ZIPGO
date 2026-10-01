@@ -16,6 +16,11 @@ namespace ZIPGO.Application.Interfaces.Repositories
 
         Task Update(User user);
 
+        Task <List<User>> GetAll();
 
+        Task<List<User>> SearchUsers(string search);
     }
 }
+
+
+

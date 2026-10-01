@@ -14,7 +14,6 @@ namespace ZIPGO.Domain.Entities
 
         public string HouseArea { get; set; }
 
-
         public string Phone {  get; set; }
 
         public string State { get; set; }
