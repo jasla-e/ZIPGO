@@ -13,9 +13,9 @@ namespace ZIPGO.Application.Interfaces.Services
         Task<ProductDto?> GetById(int id);
 
         Task<List<ProductDto>> GetFiltered(ProductFilterDto filter);
-        Task Add(ProductCreateDto product);
+        Task Add(ProductCreateDto product,Stream imageStream,string fileName);
 
-        Task Update(int id, ProductCreateDto product);
+        Task Update(int id, ProductCreateDto product,Stream? imageStream,string? fileName);
 
         Task Delete(int id);
     }

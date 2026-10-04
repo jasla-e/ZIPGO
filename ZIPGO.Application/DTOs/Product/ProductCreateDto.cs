@@ -22,9 +22,6 @@ namespace ZIPGO.Application.DTOs.Product
         [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative")]
         public int Stock { get; set; }
 
-        [Required]
-        public string Image { get; set; }
-
         public bool Offer { get; set; }
 
         public int MainCategoryId { get; set; }

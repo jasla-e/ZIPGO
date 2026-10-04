@@ -47,21 +47,56 @@ namespace ZIPGO.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Add(ProductCreateDto product)
+        public async Task<IActionResult> Add(
+     [FromForm] ProductCreateDto product,
+     IFormFile image)
         {
-            await _productService.Add(product);
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("Image is required.");
+            }
+
+            await using var stream = image.OpenReadStream();
+
+            await _productService.Add(
+                product,
+                stream,
+                image.FileName
+            );
 
             return Ok(product);
         }
-
+        
+        
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, ProductCreateDto product)
+        public async Task<IActionResult> Update(
+    int id,
+    [FromForm] ProductCreateDto product,
+    IFormFile? image)
         {
-            await _productService.Update(id, product);
+            Stream? imageStream = null;
+
+            if (image != null && image.Length > 0)
+            {
+                imageStream = image.OpenReadStream();
+            }
+
+            await _productService.Update(
+                id,
+                product,
+                imageStream,
+                image?.FileName);
+
+            if (imageStream != null)
+            {
+                await imageStream.DisposeAsync();
+            }
 
             return Ok(product);
         }
+
+
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]

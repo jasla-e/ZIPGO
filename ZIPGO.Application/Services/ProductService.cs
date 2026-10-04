@@ -10,13 +10,16 @@ namespace ZIPGO.Application.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly ISubCategoryRepository _subCategoryRepository;
+        private readonly ICloudinaryService _cloudinaryService;
 
         public ProductService(
         IProductRepository productRepository,
-        ISubCategoryRepository subCategoryRepository)
+        ISubCategoryRepository subCategoryRepository,
+        ICloudinaryService cloudinaryService)
         {
             _productRepository = productRepository;
             _subCategoryRepository = subCategoryRepository;
+            _cloudinaryService = cloudinaryService;
         }
         public async Task<List<ProductDto>> GetAll()
         {
@@ -78,8 +81,9 @@ namespace ZIPGO.Application.Services
             }).ToList();
         }
 
-        public async Task Add(ProductCreateDto productDto)
+        public async Task Add(ProductCreateDto productDto,Stream imageStream, string fileName)
         {
+           
             var subCategory = await _subCategoryRepository.GetById(
                 productDto.SubCategoryId);
 
@@ -93,7 +97,10 @@ namespace ZIPGO.Application.Services
 
             if (!belongsToMainCategory)
                 throw new Exception("SubCategory does not belong to the selected MainCategory");
-
+        
+         var imageUrl = await _cloudinaryService.UploadImage(
+         imageStream,
+         fileName);
             var product = new Product
             {
                 Name = productDto.Name,
@@ -101,7 +108,7 @@ namespace ZIPGO.Application.Services
                 Price = productDto.Price,
                 Rating = productDto.Rating,
                 Stock = productDto.Stock,
-                Image = productDto.Image,
+                Image = imageUrl,
                 Offer = productDto.Offer,
                 MainCategoryId = productDto.MainCategoryId,
                 SubCategoryId = productDto.SubCategoryId
@@ -110,7 +117,7 @@ namespace ZIPGO.Application.Services
             await _productRepository.Add(product);
         }
 
-        public async Task Update(int id, ProductCreateDto productDto)
+        public async Task Update( int id,ProductCreateDto productDto,Stream? imageStream,string? fileName)
         {
             var product = await _productRepository.GetById(id);
 
@@ -131,12 +138,20 @@ namespace ZIPGO.Application.Services
             if (!belongsToMainCategory)
                 throw new Exception("SubCategory does not belong to the selected MainCategory");
 
+            if (imageStream != null && !string.IsNullOrEmpty(fileName))
+            {
+                var imageUrl = await _cloudinaryService.UploadImage(
+                    imageStream,
+                    fileName);
+
+                product.Image = imageUrl;
+            }
+
             product.Name = productDto.Name;
             product.Description = productDto.Description;
             product.Price = productDto.Price;
             product.Rating = productDto.Rating;
             product.Stock = productDto.Stock;
-            product.Image = productDto.Image;
             product.Offer = productDto.Offer;
             product.MainCategoryId = productDto.MainCategoryId;
             product.SubCategoryId = productDto.SubCategoryId;
