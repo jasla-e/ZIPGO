@@ -1,4 +1,5 @@
 ﻿using ZIPGO.Application.DTOs.Cart;
+using ZIPGO.Application.DTOs.Product;
 using ZIPGO.Application.Interfaces;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
@@ -90,7 +91,22 @@ namespace ZIPGO.Application.Services
                 {
                     Id = item.Id,
                     ProductId = item.ProductId,
-                    Quantity = item.Quantity
+                    Quantity = item.Quantity,
+
+                    Product = new ProductDto
+                    {
+                        Id = item.Product.Id,
+                        Name = item.Product.Name,
+                        Description = item.Product.Description,
+                        Price = item.Product.Price,
+                        Rating = item.Product.Rating,
+                        Stock = item.Product.Stock,
+                        Image = item.Product.Image,
+                        Offer = item.Product.Offer,
+                        MainCategoryId = item.Product.MainCategoryId,
+                        SubCategoryId = item.Product.SubCategoryId
+                    }
+
                 }).ToList()
             };
         }

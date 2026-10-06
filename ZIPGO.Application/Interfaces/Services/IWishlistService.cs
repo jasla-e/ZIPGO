@@ -11,7 +11,7 @@ namespace ZIPGO.Application.Interfaces.Services
     {
         Task<WishlistDto?> GetWishlist(int userId);
 
-        Task AddItem(int userId, int productId);
+        Task<int?> AddItem(int userId, int productId);
 
         Task RemoveItem(int userId, int wishlistItemId);
     }

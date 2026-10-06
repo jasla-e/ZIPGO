@@ -83,13 +83,31 @@ namespace ZIPGO.Application.Services
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
 
+                PaymentMethod = order.Payment?.PaymentMethod ?? "N/A",
+
+                Address = order.Address == null
+                    ? null
+                    : new OrderAddressDto
+                    {
+                        FullName = order.Address.FullName,
+                        Phone = order.Address.Phone,
+                        House = order.Address.HouseArea,
+                        City = order.Address.City,
+                        State = order.Address.State,
+                        Pincode = order.Address.Pincode
+                    },
+
                 OrderItems = order.OrderItems.Select(item => new OrderItemDto
                 {
                     Id = item.Id,
                     ProductId = item.ProductId,
+                    ProductName = item.Product?.Name ?? "Unknown",
+                    ProductImage = item.Product?.Image ?? "",
                     Quantity = item.Quantity,
                     Price = item.Price
-                }).ToList()
+                }).ToList(),
+
+                Notification = null
             };
         }
 
@@ -106,13 +124,32 @@ namespace ZIPGO.Application.Services
                 OrderDate = order.OrderDate,
                 TotalAmount = order.TotalAmount,
 
+                PaymentMethod = order.Payment?.PaymentMethod ?? "N/A",
+
+                Address = order.Address == null
+                    ? null
+                    : new OrderAddressDto
+                    {
+                        FullName = order.Address.FullName,
+                        Phone = order.Address.Phone,
+                        House = order.Address.HouseArea,
+                        City = order.Address.City,
+                        State = order.Address.State,
+                        Pincode = order.Address.Pincode
+                    },
+
                 OrderItems = order.OrderItems.Select(item => new OrderItemDto
                 {
                     Id = item.Id,
                     ProductId = item.ProductId,
+                    ProductName = item.Product?.Name ?? "Unknown",
+                    ProductImage = item.Product?.Image ?? "",
                     Quantity = item.Quantity,
                     Price = item.Price
-                }).ToList()
+                }).ToList(),
+
+                Notification = null
+
             }).ToList();
         }
 

@@ -42,11 +42,15 @@ namespace ZIPGO.API.Controllers
         {
             var userId = GetUserId();
 
-            await _wishlistService.AddItem(
+            var wishlistItemId = await _wishlistService.AddItem(
                 userId,
                 productId);
 
-            return Ok("Item added to wishlist");
+            return Ok(new
+            {
+                id = wishlistItemId,
+                productId = productId
+            });
         }
 
         [HttpDelete("items/{id}")]

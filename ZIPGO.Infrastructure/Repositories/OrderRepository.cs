@@ -31,21 +31,24 @@ namespace ZIPGO.Infrastructure.Repositories
         public async Task<Order?> GetById(int id, int userId)
         {
             return await _context.Orders
+                .Include(o => o.Address)
+                .Include(o => o.Payment)
                 .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
                 .FirstOrDefaultAsync(o =>
                     o.Id == id &&
                     o.UserId == userId);
         }
-
         public async Task<List<Order>> GetByUserId(int userId)
         {
             return await _context.Orders
+                .Include(o => o.Address)
+                .Include(o => o.Payment)
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
+                    .ThenInclude(oi => oi.Product)
                 .Where(o => o.UserId == userId)
                 .ToListAsync();
         }
-
         public async Task Add(Order order)
         {
             _context.Orders.Add(order);

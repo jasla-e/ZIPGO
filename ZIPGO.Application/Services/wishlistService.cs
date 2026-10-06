@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ZIPGO.Application.DTOs.Product;
 using ZIPGO.Application.DTOs.Wishlist;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
@@ -34,16 +35,29 @@ namespace ZIPGO.Application.Services
                 UserId = wishlist.UserId,
 
                 WishlistItems = wishlist.WishlistItems
-                    .Select(item => new WishlistItemDto
-                    {
-                        Id = item.Id,
-                        ProductId = item.ProductId
-                    })
-                    .ToList()
+    .Select(item => new WishlistItemDto
+    {
+        Id = item.Id,
+        ProductId = item.ProductId,
+        Product = new ProductDto
+        {
+            Id = item.Product.Id,
+            Name = item.Product.Name,
+            Description = item.Product.Description,
+            Price = item.Product.Price,
+            Rating = item.Product.Rating,
+            Stock = item.Product.Stock,
+            Image = item.Product.Image,
+            Offer = item.Product.Offer,
+            MainCategoryId = item.Product.MainCategoryId,
+            SubCategoryId = item.Product.SubCategoryId
+        }
+    })
+    .ToList()
             };
         }
 
-        public async Task AddItem(int userId, int productId)
+        public async Task<int?> AddItem(int userId, int productId)
         {
             var wishlist = await _wishlistRepository.GetByUserId(userId);
 
@@ -63,7 +77,7 @@ namespace ZIPGO.Application.Services
                     productId);
 
             if (existingItem != null)
-                return;
+                return existingItem.Id;
 
             var wishlistItem = new WishlistItem
             {
@@ -72,6 +86,8 @@ namespace ZIPGO.Application.Services
             };
 
             await _wishlistItemRepository.Add(wishlistItem);
+
+            return wishlistItem.Id;
         }
 
         public async Task RemoveItem(int userId, int wishlistItemId)
