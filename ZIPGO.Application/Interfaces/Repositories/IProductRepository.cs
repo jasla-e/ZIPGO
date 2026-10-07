@@ -20,5 +20,7 @@ namespace ZIPGO.Application.Interfaces
 
         Task<List<Product>> GetFiltered(ProductFilterDto filter);
 
+        Task<(List<Product> Products, int TotalCount)> GetAdminProducts( string? search,int page,int pageSize);
+
     }
 }

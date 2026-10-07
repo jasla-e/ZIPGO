@@ -121,5 +121,32 @@ namespace ZIPGO.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<(List<Product> Products, int TotalCount)> GetAdminProducts(
+    string? search,
+    int page,
+    int pageSize)
+        {
+            var query = _context.Products.AsQueryable();
+
+            // Search
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(search));
+            }
+
+            // Total products after search
+            var totalCount = await query.CountAsync();
+
+            // Pagination
+            var products = await query
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (products, totalCount);
+        }
+
     }
 }

@@ -163,5 +163,40 @@ namespace ZIPGO.Application.Services
         {
             await _productRepository.Delete(id);
         }
+
+        public async Task<ProductPagedResultDto> GetAdminProducts(
+    string? search,
+    int page,
+    int pageSize)
+        {
+            var result = await _productRepository.GetAdminProducts(
+                search,
+                page,
+                pageSize);
+
+            var products = result.Products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Rating = p.Rating,
+                Stock = p.Stock,
+                Image = p.Image,
+                Offer = p.Offer,
+                MainCategoryId = p.MainCategoryId,
+                SubCategoryId = p.SubCategoryId
+            }).ToList();
+
+            return new ProductPagedResultDto
+            {
+                Products = products,
+                TotalCount = result.TotalCount,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(
+                    result.TotalCount / (double)pageSize)
+            };
+        }
     }
 }

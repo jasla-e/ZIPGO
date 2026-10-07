@@ -61,6 +61,7 @@ namespace ZIPGO.Application.Services
                 {
                     ProductId = item.ProductId,
                     ProductName = item.Product?.Name ?? "Unknown",
+                    ProductImage = item.Product?.Image ?? "",
                     Quantity = item.Quantity,
                     Price = item.Price
                 }).ToList()
@@ -311,6 +312,7 @@ namespace ZIPGO.Application.Services
                 {
                     ProductId = item.ProductId,
                     ProductName = item.Product?.Name ?? "Unknown",
+                    ProductImage = item.Product?.Image ?? "",
                     Quantity = item.Quantity,
                     Price = item.Price
                 }).ToList()

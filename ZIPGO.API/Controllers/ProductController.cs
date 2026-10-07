@@ -106,5 +106,20 @@ namespace ZIPGO.API.Controllers
 
             return Ok();
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetAdminProducts(
+        string? search = null,
+         int page = 1,
+         int pageSize = 4)
+        {
+            var products = await _productService.GetAdminProducts(
+                search,
+                page,
+                pageSize);
+
+            return Ok(products);
+        }
     }
 }

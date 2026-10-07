@@ -18,5 +18,7 @@ namespace ZIPGO.Application.Interfaces.Services
         Task Update(int id, ProductCreateDto product,Stream? imageStream,string? fileName);
 
         Task Delete(int id);
+
+        Task<ProductPagedResultDto> GetAdminProducts( string? search, int page,int pageSize);
     }
 }
