@@ -90,13 +90,7 @@ namespace ZIPGO.Application.Services
             if (subCategory == null)
                 throw new Exception("SubCategory not found");
 
-       var belongsToMainCategory =
-       await _subCategoryRepository.BelongsToMainCategory(
-        productDto.SubCategoryId,
-        productDto.MainCategoryId);
-
-            if (!belongsToMainCategory)
-                throw new Exception("SubCategory does not belong to the selected MainCategory");
+        
         
          var imageUrl = await _cloudinaryService.UploadImage(
          imageStream,
@@ -130,13 +124,7 @@ namespace ZIPGO.Application.Services
             if (subCategory == null)
                 throw new Exception("SubCategory not found");
 
-            var belongsToMainCategory =
-         await _subCategoryRepository.BelongsToMainCategory(
-        productDto.SubCategoryId,
-        productDto.MainCategoryId);
-
-            if (!belongsToMainCategory)
-                throw new Exception("SubCategory does not belong to the selected MainCategory");
+            
 
             if (imageStream != null && !string.IsNullOrEmpty(fileName))
             {

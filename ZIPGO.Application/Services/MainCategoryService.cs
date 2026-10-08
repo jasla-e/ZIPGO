@@ -1,7 +1,6 @@
 ﻿using ZIPGO.Application.DTOs.MainCategory;
 using ZIPGO.Application.Interfaces.Repositories;
 using ZIPGO.Application.Interfaces.Services;
-using ZIPGO.Domain.Entities;
 
 namespace ZIPGO.Application.Services
 {
@@ -9,7 +8,8 @@ namespace ZIPGO.Application.Services
     {
         private readonly IMainCategoryRepository _mainCategoryRepository;
 
-        public MainCategoryService(IMainCategoryRepository mainCategoryRepository)
+        public MainCategoryService(
+            IMainCategoryRepository mainCategoryRepository)
         {
             _mainCategoryRepository = mainCategoryRepository;
         }
@@ -27,7 +27,8 @@ namespace ZIPGO.Application.Services
 
         public async Task<MainCategoryDto?> GetById(int id)
         {
-            var mainCategory = await _mainCategoryRepository.GetById(id);
+            var mainCategory =
+                await _mainCategoryRepository.GetById(id);
 
             if (mainCategory == null)
                 return null;
@@ -37,33 +38,6 @@ namespace ZIPGO.Application.Services
                 Id = mainCategory.Id,
                 Name = mainCategory.Name
             };
-        }
-
-        public async Task Add(MainCategoryCreateDto mainCategoryDto)
-        {
-            var mainCategory = new MainCategory
-            {
-                Name = mainCategoryDto.Name
-            };
-
-            await _mainCategoryRepository.Add(mainCategory);
-        }
-
-        public async Task Update(int id, MainCategoryCreateDto mainCategoryDto)
-        {
-            var mainCategory = await _mainCategoryRepository.GetById(id);
-
-            if (mainCategory == null)
-                return;
-
-            mainCategory.Name = mainCategoryDto.Name;
-
-            await _mainCategoryRepository.Update(mainCategory);
-        }
-
-        public async Task Delete(int id)
-        {
-            await _mainCategoryRepository.Delete(id);
         }
     }
 }

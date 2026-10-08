@@ -10,11 +10,5 @@ namespace ZIPGO.Application.Interfaces.Repositories
         Task<List<MainCategory>> GetAll();
 
         Task<MainCategory?> GetById(int id);
-
-        Task Add(MainCategory mainCategory);
-
-        Task Update(MainCategory mainCategory);
-
-        Task Delete(int id);
     }
 }

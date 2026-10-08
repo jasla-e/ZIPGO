@@ -129,6 +129,7 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<AppDbContext>();
 
     await AdminSeeder.SeedAdminAsync(context);
+    await CategorySeeder.SeedAsync(context);
 }
 
 

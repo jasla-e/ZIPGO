@@ -11,11 +11,5 @@ namespace ZIPGO.Application.Interfaces.Services
         Task<List<MainCategoryDto>> GetAll();
 
         Task<MainCategoryDto?> GetById(int id);
-
-        Task Add(MainCategoryCreateDto mainCategory);
-
-        Task Update(int id, MainCategoryCreateDto mainCategory);
-
-        Task Delete(int id);
     }
 }
