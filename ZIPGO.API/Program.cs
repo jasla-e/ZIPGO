@@ -11,6 +11,8 @@ using ZIPGO.Infrastructure.Data;
 using ZIPGO.Infrastructure.Repositories;
 using ZIPGO.Infrastructure.Services;
 using CloudinaryDotNet;
+using FluentValidation;
+using ZIPGO.Application.DTOs.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -119,6 +121,9 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
 
 var app = builder.Build();
 

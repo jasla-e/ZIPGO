@@ -58,7 +58,7 @@ namespace ZIPGO.Infrastructure.Repositories
                 existingProduct.Image = product.Image;
                 existingProduct.Offer = product.Offer;
                 existingProduct.SubCategoryId = product.SubCategoryId;
-
+                existingProduct.MainCategoryId = product.MainCategoryId;
 
             await _context.SaveChangesAsync();
 
@@ -101,7 +101,7 @@ namespace ZIPGO.Infrastructure.Repositories
             }
             else if (filter.PriceRange == "1000 - 5000")
             {
-                query = query.Where(p => p.Price >= 1000 && p.Price <= 5000);
+                query = query.Where(p => p.Price > 1000 && p.Price <= 5000);
             }
             else if (filter.PriceRange == "above 5000")
             {
